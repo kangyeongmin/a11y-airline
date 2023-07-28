@@ -2,15 +2,24 @@ import React, { useState, MouseEvent } from "react";
 import "./SpinButton.css";
 
 const SpinButton: React.FC = () => {
+  const MIN_COUNT = 0;
+  const MAX_COUNT = 3;
   const [count, setCount] = useState<number>(0);
   const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
+  const [message, setMessage] = useState("");
 
   const increment = () => {
-    setCount((prevCount) => prevCount + 1);
+    if (count < MAX_COUNT) {
+      setCount((prevCount) => prevCount + 1);
+      setMessage(`성인 승객 추가 ${count + 1}`);
+    }
   };
 
   const decrement = () => {
-    setCount((prevCount) => prevCount - 1);
+    if (count > MIN_COUNT) {
+      setCount((prevCount) => prevCount - 1);
+      setMessage(`성인 승객 감소 ${count - 1}`);
+    }
   };
 
   const toggleTooltip = (event: MouseEvent<HTMLDivElement>) => {
@@ -34,7 +43,11 @@ const SpinButton: React.FC = () => {
             )}
           </div>
         </div>
-        <button onClick={decrement} className="spinButton">
+        <button
+          onClick={decrement}
+          className="spinButton"
+          aria-label="성인 탑승자 한명 줄이기"
+        >
           -
         </button>
         <input
@@ -43,10 +56,23 @@ const SpinButton: React.FC = () => {
           readOnly
           className="spinButtonInput"
           value={count}
+          aria-label="텍스트 숫자만 수정"
         />
-        <button onClick={increment} className="spinButton">
+        <button
+          onClick={increment}
+          className="spinButton"
+          aria-label="성인 탑승자 한명 늘리기"
+        >
           +
         </button>
+        <div
+          role="alert"
+          className="hidden"
+          aria-atomic={true}
+          aria-live="assertive"
+        >
+          {message}
+        </div>
       </div>
     </section>
   );
